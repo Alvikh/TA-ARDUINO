@@ -84,7 +84,9 @@ void checkForOTAUpdate() {
   drawBorder();
   centerText(1, "UPDATE VERSION");
   centerText(2, "updating....");
-    t_httpUpdate_return ret = httpUpdate.update(espClient, FIRMWARE_URL);
+    WiFiClientSecure client;
+client.setInsecure(); // abaikan SSL certificate
+t_httpUpdate_return ret = httpUpdate.update(client, FIRMWARE_URL);
 
     switch (ret) {
       case HTTP_UPDATE_FAILED:
