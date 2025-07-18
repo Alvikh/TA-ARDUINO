@@ -38,52 +38,136 @@ void setupOTA() {
   Serial.println(WiFi.localIP());
 }
 String getLatestVersion() {
+  WiFiClientSecure secureClient;
+  secureClient.setInsecure();
+  
   HTTPClient http;
-  WiFiClient wifiClient;
-
-  http.begin(wifiClient, VERSION_URL);  // ✅ perbaikan di sini
-  int httpCode = http.GET();
-
-  if (httpCode == HTTP_CODE_OK) {
-    String payload = http.getString();
-    http.end();
-    return payload;
+  
+  Serial.print("Fetching version from: ");
+  Serial.println(VERSION_URL);
+  
+  if (!http.begin(secureClient, VERSION_URL)) {
+    Serial.println("Failed to begin HTTP connection");
+    return "";
   }
 
-  http.end();
-  return "";
-}
-bool shouldUpdate(String currentVersion, String latestVersion) {
-  if (latestVersion == "") return false;
+  http.setTimeout(10000);
   
-  // Simple version comparison (for semantic versioning)
-  int currentParts[3], latestParts[3];
-  sscanf(currentVersion.c_str(), "%d.%d.%d", &currentParts[0], &currentParts[1], &currentParts[2]);
-  sscanf(latestVersion.c_str(), "%d.%d.%d", &latestParts[0], &latestParts[1], &latestParts[2]);
+  int httpCode = http.GET();
+  
+  if (httpCode != HTTP_CODE_OK) {
+    Serial.printf("HTTP error code: %d\n", httpCode);
+    http.end();
+    return "";
+  }
+
+  String payload = http.getString();
+  payload.trim(); // Memanggil trim() sebagai statement terpisah
+  http.end();
+  
+  Serial.print("Latest version: ");
+  Serial.println(payload);
+  
+  return payload;
+}
+
+bool shouldUpdate(String currentVersion, String latestVersion) {
+  if (latestVersion.isEmpty()) {
+    Serial.println("Latest version string is empty");
+    return false;
+  }
+
+  // Hitung jumlah titik sebagai pengganti count()
+  int dotCount = 0;
+  for (unsigned int i = 0; i < latestVersion.length(); i++) {
+    if (latestVersion.charAt(i) == '.') dotCount++;
+  }
+  
+  if (latestVersion.length() > 10 || dotCount != 2) {
+    Serial.println("Invalid version format");
+    return false;
+  }
+
+  int currentParts[3] = {0};
+  int latestParts[3] = {0};
+  
+  if (sscanf(currentVersion.c_str(), "%d.%d.%d", &currentParts[0], &currentParts[1], &currentParts[2]) != 3) {
+    Serial.println("Failed to parse current version");
+    return false;
+  }
+  
+  if (sscanf(latestVersion.c_str(), "%d.%d.%d", &latestParts[0], &latestParts[1], &latestParts[2]) != 3) {
+    Serial.println("Failed to parse latest version");
+    return false;
+  }
 
   for (int i = 0; i < 3; i++) {
-    if (latestParts[i] > currentParts[i]) return true;
-    if (latestParts[i] < currentParts[i]) return false;
+    if (latestParts[i] > currentParts[i]) {
+      Serial.println("New update available");
+      return true;
+    }
+    if (latestParts[i] < currentParts[i]) {
+      Serial.println("Current version is newer");
+      return false;
+    }
   }
+  
+  Serial.println("Versions are identical");
   return false;
 }
+
 void checkForOTAUpdate() {
-  WiFiClient client;
-  t_httpUpdate_return ret = ESPhttpUpdate.update(client, FIRMWARE_URL);
-
-  switch (ret) {
-    case HTTP_UPDATE_FAILED:
-      Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n", 
-        ESPhttpUpdate.getLastError(), 
-        ESPhttpUpdate.getLastErrorString().c_str());
-      break;
-
-    case HTTP_UPDATE_NO_UPDATES:
-      Serial.println("No updates available.");
-      break;
-
-    case HTTP_UPDATE_OK:
-      Serial.println("Update successful.");
-      break;
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("WiFi not connected!");
+    return;
   }
+
+  Serial.println("Checking for updates...");
+  
+  String latestVersion = getLatestVersion();
+  if (latestVersion.isEmpty()) {
+    Serial.println("Failed to get latest version");
+    return;
+  }
+
+  if (!shouldUpdate(CURRENT_VERSION, latestVersion)) {
+    return;
+  }
+
+  WiFiClientSecure client;
+  client.setInsecure();
+  
+  ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
+  ESPhttpUpdate.rebootOnUpdate(true);
+  
+  // Alternatif untuk setUserAgent yang tidak tersedia
+  // Tambahkan header User-Agent melalui HTTPClient jika perlu
+  
+  Serial.print("Downloading firmware from: ");
+  Serial.println(FIRMWARE_URL);
+
+  for (int attempt = 1; attempt <= 3; attempt++) {
+    Serial.printf("Attempt %d/3...\n", attempt);
+    
+    t_httpUpdate_return ret = ESPhttpUpdate.update(client, FIRMWARE_URL);
+
+    switch (ret) {
+      case HTTP_UPDATE_OK:
+        Serial.println("Update successful!");
+        return;
+        
+      case HTTP_UPDATE_NO_UPDATES:
+        Serial.println("No updates available.");
+        return;
+        
+      case HTTP_UPDATE_FAILED:
+        Serial.printf("Update failed (attempt %d): %s\n", 
+                     attempt, 
+                     ESPhttpUpdate.getLastErrorString().c_str());
+        if (attempt < 3) delay(5000);
+        break;
+    }
+  }
+  
+  Serial.println("All update attempts failed");
 }

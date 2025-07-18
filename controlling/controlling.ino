@@ -11,7 +11,7 @@
 #define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/master/controlling/version.md"
 #define FIRMWARE_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/master/controlling/build/esp8266.esp8266.d1_mini/controlling.ino.bin"
 
-#define CURRENT_VERSION "1.0.0"
+#define CURRENT_VERSION "1.0.1"
 // Konfigurasi Perangkat
 #define RELAY_PIN D2               // Pin untuk relay
 #define DHT_PIN D7               // Pin untuk DHT11

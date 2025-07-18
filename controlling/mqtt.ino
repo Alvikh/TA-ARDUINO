@@ -60,6 +60,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
       setRelayState(false);
     }
   }
+  if (doc["action"] == "esp_control" && doc["state"] == "reset" && doc["id"] == deviceId) {
+    Serial.println("Reset request received.");
+    ESP.restart();
+  }
 }
 
 // Fungsi Send Status Acknowledgment
