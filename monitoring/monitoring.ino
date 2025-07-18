@@ -15,10 +15,10 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <HTTPUpdate.h>
-#define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/refs/heads/master/monitoring/version.md?token=GHSAT0AAAAAADHEO4FD7X6K75ZQWT3NXBRY2D2HQWQ"
+#define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/master/monitoring/version.md"
 #define FIRMWARE_URL "https://github.com/Alvikh/TA-ARDUINO/raw/refs/heads/master/monitoring/build/esp32.esp32.esp32/monitoring.ino.bin"
 
-#define CURRENT_VERSION "1.0.1"
+#define CURRENT_VERSION "1.0.2"
 
 // Hardware Configuration
 #define DHTPIN 5
@@ -43,7 +43,7 @@
 #define CURRENT_OVER_THRESHOLD 15.0      // Arus berlebih (A)
 #define POWER_OVER_THRESHOLD 3500.0      // Daya berlebih (W)
 #define TEMP_OVER_THRESHOLD 50.0         // Suhu tinggi (°C)
-#define HUMIDITY_OVER_THRESHOLD 60.0     // Kelembapan tinggi (%)
+#define HUMIDITY_OVER_THRESHOLD 80.0     // Kelembapan tinggi (%)
 #define FREQUENCY_DEVIATION 2.0          // Deviasi frekuensi (Hz)
 // Konfigurasi LED
 #define LED_PIN 17

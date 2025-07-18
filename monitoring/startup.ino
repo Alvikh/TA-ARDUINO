@@ -9,8 +9,6 @@ void displayWelcomeScreen() {
 }
 void showWelcomeScreen() {
   lcd.clear();
-// appInitTone();
-  // ⚙️ Border animasi masuk dari pinggir atas & bawah
   for (int i = 0; i < LCD_COLS; i++) {
     // Baris atas
     lcd.setCursor(i, 0);
