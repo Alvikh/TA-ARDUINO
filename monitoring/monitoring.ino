@@ -15,7 +15,7 @@
 #include <HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <HTTPUpdate.h>
-#define VERSION_URL "https://pey.my.id/firmware/monitoring/version.txt"
+#define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/refs/heads/master/monitoring/version.md?token=GHSAT0AAAAAADHEO4FD7X6K75ZQWT3NXBRY2D2HQWQ"
 #define FIRMWARE_URL "https://pey.my.id/firmware/monitoring/firmware.bin"
 
 #define CURRENT_VERSION "1.0.0"
@@ -93,8 +93,7 @@ bool alertPending = false;         // Ada alert baru yang belum ditampilkan
 bool alertAlreadyShown = false;    // Untuk mencegah ditampilkan ulang
 
 bool ledc_initialized = false;
-const int BUFFER_SIZE = 10;
-DynamicJsonDocument buffer[BUFFER_SIZE];
+String jsonBuffer[10]; 
 int bufferIndex = 0;
 // Sensor Data Structure
 struct SensorData {
