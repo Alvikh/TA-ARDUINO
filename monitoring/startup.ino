@@ -5,6 +5,7 @@ void displayWelcomeScreen() {
   centerText(1, "SMART POWER");
   centerText(2, "MANAGEMENT");
   delay(2000);
+  
 }
 void showWelcomeScreen() {
   lcd.clear();

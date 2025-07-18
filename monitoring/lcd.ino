@@ -1,4 +1,3 @@
-
 // Initialization Functions
 void initLCD() {
   lcd.init();
@@ -30,46 +29,55 @@ void displayMQTTStatus(bool connected) {
   centerText(2, "------");
   
 }
+
 void updateDisplay() {
   lcd.clear();
   drawBorder();
   
   switch(currentDisplayPage) {
-    case 0:
-      // Temperature and Humidity
+    case 0: // Temperature and Humidity
       centerText(0, "KONDISI");
       lcd.setCursor(2, 1);
-      lcd.print("Suhu: " + String(sensorData.temperature, 1) + " C");
+      lcd.print("Suhu: " + (isnan(sensorData.temperature) ? "---" : String(sensorData.temperature, 1)) + " C");
       lcd.setCursor(2, 2);
-      lcd.print("Kelemb: " + String(sensorData.humidity, 0) + " %");
+      lcd.print("Kelemb: " + (isnan(sensorData.humidity) ? "---" : String(sensorData.humidity, 0)) + " %");
       break;
       
-    case 1:
-      // Voltage and Current
+    case 1: // Voltage and Current
       centerText(0, "TEGANGAN & ARUS");
       lcd.setCursor(2, 1);
-      lcd.print("Tegangan: " + String(sensorData.voltage, 1) + " V");
+      lcd.print("Tegangan: " + (isnan(sensorData.voltage) ? "---" : String(sensorData.voltage, 1)) + " V");
       lcd.setCursor(2, 2);
-      lcd.print("Arus: " + String(sensorData.current, 2) + " A");
+      lcd.print("Arus: " + (isnan(sensorData.current) ? "---" : String(sensorData.current, 2)) + " A");
       break;
       
-    case 2:
-      // Power and Energy
+    case 2: // Power and Energy
       centerText(0, "DAYA & ENERGI");
       lcd.setCursor(2, 1);
-      lcd.print("Daya: " + String(sensorData.power, 1) + " W");
+      lcd.print("Daya: " + (isnan(sensorData.power) ? "---" : String(sensorData.power, 1)) + " W");
       lcd.setCursor(2, 2);
-      lcd.print("Energi: " + String(sensorData.energy, 2) + " kWh");
+      lcd.print("Energi: " + (isnan(sensorData.energy) ? "---" : String(sensorData.energy, 2)) + " kWh");
       break;
       
-    case 3:
-    Serial.println(sensorData.timestamp);
-      // Date and Time (Full format)
+    case 3: // Frequency and Power Factor
+      centerText(0, "FREKUENSI & PowerF");
+      lcd.setCursor(2, 1);
+      lcd.print("Frekuensi: " + (isnan(sensorData.frequency) ? "---" : String(sensorData.frequency, 1)) + " Hz");
+      lcd.setCursor(2, 2);
+      lcd.print("PowerF: " + (isnan(sensorData.power_factor) ? "---" : String(sensorData.power_factor, 2)));
+      break;
+      
+    case 4: // Date and Time
       centerText(0, "WAKTU");
       lcd.setCursor(2, 1);
-      lcd.print("Tgl: " + sensorData.timestamp.substring(0, 10));
+      lcd.print("Tgl: " + (sensorData.timestamp.length() >= 10 ? sensorData.timestamp.substring(0, 10) : "---"));
       lcd.setCursor(2, 2);
-      lcd.print("Wkt: " + sensorData.timestamp.substring(11));
+      lcd.print("Wkt: " + (sensorData.timestamp.length() >= 19 ? sensorData.timestamp.substring(11) : "---"));
+      break;
+      
+    default:
+      centerText(1, "DATA TIDAK VALID");
+      centerText(2, "Halaman: " + String(currentDisplayPage));
       break;
   }
 }

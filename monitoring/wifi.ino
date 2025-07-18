@@ -1,4 +1,3 @@
-
 void initWiFi() {
   WiFiManager wifiManager;
   WiFiManagerParameter custom_id("id", "Device ID", clientId.c_str(), 32);

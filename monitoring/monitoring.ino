@@ -1,4 +1,4 @@
-
+#include <ESPmDNS.h>
 #include <WiFi.h>
 #include <WiFiManager.h>
 #include <PubSubClient.h>
@@ -13,6 +13,7 @@
 #include <driver/ledc.h>
 #include "pitches.h"
 #include <HTTPClient.h>
+#include <WiFiClientSecure.h>
 #include <HTTPUpdate.h>
 #define VERSION_URL "https://pey.my.id/firmware/monitoring/version.txt"
 #define FIRMWARE_URL "https://pey.my.id/firmware/monitoring/firmware.bin"
@@ -92,13 +93,17 @@ bool alertPending = false;         // Ada alert baru yang belum ditampilkan
 bool alertAlreadyShown = false;    // Untuk mencegah ditampilkan ulang
 
 bool ledc_initialized = false;
-
+const int BUFFER_SIZE = 10;
+DynamicJsonDocument buffer[BUFFER_SIZE];
+int bufferIndex = 0;
 // Sensor Data Structure
 struct SensorData {
   float temperature;
   float humidity;
   float voltage;
   float current;
+  float frequency;
+  float power_factor;
   float power;
   float energy;
   String timestamp;
@@ -205,6 +210,7 @@ void errorTone() {
 }
 void setup() {
   Serial.begin(115200);
+  Serial.println("starting sistem");
   initLCD();
   initSensors();
   initWiFi();
@@ -212,9 +218,16 @@ void setup() {
   successTone();
   initMQTT();
     initStatusLED();
+      if (!MDNS.begin("esp32")) {
+    Serial.println("Error setting up MDNS responder!");
+    while (1) {
+      delay(1000);
+    }
+  }
       setupOTA();
 initLEDC();
-  checkForOTAUpdate();
+  // checkForOTAUpdate();
+  Serial.println("done setup");
 }
 
 void loop() {
@@ -226,6 +239,7 @@ void loop() {
     readSensors();
     publishMQTT();
     checkForAnomalies(sensorData);
+    bufferMeasurement();
   }
 
 if (!isAlertDisplaying && currentMillis - lastDisplayChange >= DISPLAY_CHANGE_INTERVAL) {
