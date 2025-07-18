@@ -20,15 +20,23 @@ void publishMQTT() {
 
 void reconnectMQTT() {
   if (mqttClient.connect(clientId.c_str())) {
-    // displayMQTTStatus(true);
+    mqttClient.subscribe("smartpower/device/control");
+    Serial.println("MQTT Connected and Subscribed!");
+  } else {
+    Serial.println("MQTT Connection Failed.");
   }
 }
+
 void initMQTT() {
   mqttClient.setServer("broker.hivemq.com", 1883);
   mqttClient.setCallback(handleMQTTMessage);
-mqttClient.subscribe("smartpower/device/control");
 }
 void handleMQTTMessage(char* topic, byte* payload, unsigned int length) {
+  if (firstMessage) {
+    firstMessage = false;
+    Serial.println("Skip retained message at first subscribe");
+    return;
+  }
   Serial.print("Message received on topic: ");
   Serial.println(topic);
 
@@ -53,6 +61,7 @@ void handleMQTTMessage(char* topic, byte* payload, unsigned int length) {
     String id = doc["id"] | "";
     Serial.println("Reset request received.");
     lcd.clear();
+      drawBorder();
     centerText(1, "REMOTE CONTROL");
     centerText(2, "RESETTING...");
     delay(2000);

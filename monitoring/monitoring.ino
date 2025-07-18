@@ -48,7 +48,7 @@
 // Konfigurasi LED
 #define LED_PIN 17
 #define WIFI_BLINK_INTERVAL 500  // interval kedip WiFi dalam ms
-
+bool firstMessage = true;
 unsigned long previousBlinkMillis = 0;
 bool ledState = LOW;
 bool wifiConnected = false;

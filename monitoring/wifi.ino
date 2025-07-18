@@ -1,17 +1,18 @@
 void initWiFi() {
+  String mac = WiFi.macAddress();
+  mac.replace(":", "");
+  clientId = mac;
+
   WiFiManager wifiManager;
-  WiFiManagerParameter custom_id("id", "Device ID", clientId.c_str(), 32);
-  wifiManager.addParameter(&custom_id);
-  
+
+  // HTML tampil di atas form SSID
+  String html = "<h1>" + clientId + "</h1>";
+  wifiManager.setCustomHeadElement(html.c_str());
+
   if (!wifiManager.autoConnect("PowerMonitor")) {
     displayError("WiFi Failed");
     ESP.restart();
   }
-  
-  String mac = WiFi.macAddress();
-  mac.replace(":", "");
-  clientId = mac;
-  
+
   displayConnectionInfo();
 }
-
