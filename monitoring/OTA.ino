@@ -80,6 +80,10 @@ void checkForOTAUpdate() {
 
   if (shouldUpdate(CURRENT_VERSION, latestVersion)) {
     Serial.println("New firmware available, updating...");
+      lcd.clear();
+  drawBorder();
+  centerText(1, "UPDATE VERSION");
+  centerText(2, "updating....");
     t_httpUpdate_return ret = httpUpdate.update(espClient, FIRMWARE_URL);
 
     switch (ret) {

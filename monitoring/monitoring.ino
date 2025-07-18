@@ -16,9 +16,9 @@
 #include <WiFiClientSecure.h>
 #include <HTTPUpdate.h>
 #define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/master/monitoring/version.md"
-#define FIRMWARE_URL "https://github.com/Alvikh/TA-ARDUINO/raw/refs/heads/master/monitoring/build/esp32.esp32.esp32/monitoring.ino.bin"
+#define FIRMWARE_URL "https://github.com/Alvikh/TA-ARDUINO/raw/master/monitoring/build/esp32.esp32.esp32/monitoring.ino.bin"
 
-#define CURRENT_VERSION "1.0.2"
+#define CURRENT_VERSION "1.0.3"
 
 // Hardware Configuration
 #define DHTPIN 5
