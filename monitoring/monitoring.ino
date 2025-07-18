@@ -16,9 +16,9 @@
 #include <WiFiClientSecure.h>
 #include <HTTPUpdate.h>
 #define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/refs/heads/master/monitoring/version.md?token=GHSAT0AAAAAADHEO4FD7X6K75ZQWT3NXBRY2D2HQWQ"
-#define FIRMWARE_URL "https://pey.my.id/firmware/monitoring/firmware.bin"
+#define FIRMWARE_URL "https://github.com/Alvikh/TA-ARDUINO/raw/refs/heads/master/monitoring/build/esp32.esp32.esp32/monitoring.ino.bin"
 
-#define CURRENT_VERSION "1.0.0"
+#define CURRENT_VERSION "1.0.1"
 
 // Hardware Configuration
 #define DHTPIN 5
@@ -225,7 +225,7 @@ void setup() {
   }
       setupOTA();
 initLEDC();
-  // checkForOTAUpdate();
+  checkForOTAUpdate();
   Serial.println("done setup");
 }
 

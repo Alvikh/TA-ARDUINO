@@ -1,5 +1,13 @@
 void bufferMeasurement() {
   DynamicJsonDocument doc(256);
+  String isoTime = sensorData.timestamp;
+String day    = isoTime.substring(8, 10);
+String month  = isoTime.substring(5, 7);
+String year   = isoTime.substring(0, 4);
+String time   = isoTime.substring(11); // "19:44:04"
+
+String fixedTime = day + "-" + month + "-" + year + " " + time;
+
   doc["device_id"] = clientId;
   doc["temperature"] = isnan(sensorData.temperature) ? 0.0 : sensorData.temperature;
   doc["humidity"] = isnan(sensorData.humidity) ? 0.0 : sensorData.humidity;
@@ -9,7 +17,7 @@ void bufferMeasurement() {
   doc["energy"] = isnan(sensorData.energy) ? 0.0 : sensorData.energy;
   doc["frequency"] = isnan(sensorData.frequency) ? 0.0 : sensorData.frequency;
   doc["power_factor"] = isnan(sensorData.power_factor) ? 0.0 : sensorData.power_factor;
-  doc["measured_at"] = sensorData.timestamp;
+  doc["measured_at"] = fixedTime;
 
   String jsonStr;
   serializeJson(doc, jsonStr);
@@ -43,6 +51,10 @@ void sendBufferedData() {
     String finalJson;
     serializeJson(arr, finalJson);
 
+    // Print isi JSON sebelum dikirim
+    Serial.println("Request body:");
+    Serial.println(finalJson);
+
     int httpResponseCode = http.POST(finalJson);
     Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
@@ -52,4 +64,3 @@ void sendBufferedData() {
     Serial.println("WiFi not connected.");
   }
 }
-
