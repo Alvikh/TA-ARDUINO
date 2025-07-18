@@ -15,6 +15,3 @@ void initWiFi() {
   displayConnectionInfo();
 }
 
-void initMQTT() {
-  mqttClient.setServer("broker.hivemq.com", 1883);
-}

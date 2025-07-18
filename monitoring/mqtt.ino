@@ -23,3 +23,39 @@ void reconnectMQTT() {
     // displayMQTTStatus(true);
   }
 }
+void initMQTT() {
+  mqttClient.setServer("broker.hivemq.com", 1883);
+  mqttClient.setCallback(handleMQTTMessage);
+mqttClient.subscribe("smartpower/device/control");
+}
+void handleMQTTMessage(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message received on topic: ");
+  Serial.println(topic);
+
+  String message;
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+
+  Serial.print("Payload: ");
+  Serial.println(message);
+
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, message);
+
+  if (error) {
+    Serial.print("JSON deserialization failed: ");
+    Serial.println(error.c_str());
+    return;
+  }
+
+  if (doc["action"] == "esp_control" && doc["state"] == "reset" && doc["id"] == clientId) {
+    String id = doc["id"] | "";
+    Serial.println("Reset request received.");
+    lcd.clear();
+    centerText(1, "REMOTE CONTROL");
+    centerText(2, "RESETTING...");
+    delay(2000);
+    ESP.restart();
+  }
+}

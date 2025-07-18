@@ -18,7 +18,7 @@
 #define VERSION_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/master/monitoring/version.md"
 #define FIRMWARE_URL "https://raw.githubusercontent.com/Alvikh/TA-ARDUINO/master/monitoring/build/esp32.esp32.esp32/monitoring.ino.bin"
 
-#define CURRENT_VERSION "1.0.3"
+#define CURRENT_VERSION "1.0.4"
 
 // Hardware Configuration
 #define DHTPIN 5
