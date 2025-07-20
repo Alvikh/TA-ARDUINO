@@ -57,14 +57,14 @@ void handleMQTTMessage(char* topic, byte* payload, unsigned int length) {
     return;
   }
 
-  if (doc["action"] == "esp_control" && doc["state"] == "reset" && doc["id"] == clientId) {
-    String id = doc["id"] | "";
-    Serial.println("Reset request received.");
-    lcd.clear();
-      drawBorder();
-    centerText(1, "REMOTE CONTROL");
-    centerText(2, "RESETTING...");
-    delay(2000);
-    ESP.restart();
-  }
+  // if (doc["action"] == "esp_control" && doc["state"] == "reset" && doc["id"] == clientId) {
+  //   String id = doc["id"] | "";
+  //   Serial.println("Reset request received.");
+  //   lcd.clear();
+  //     drawBorder();
+  //   centerText(1, "REMOTE CONTROL");
+  //   centerText(2, "RESETTING...");
+  //   delay(2000);
+  //   ESP.restart();
+  // }
 }
