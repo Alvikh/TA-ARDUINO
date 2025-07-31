@@ -52,8 +52,8 @@ void showWelcomeScreen() {
 
   // 🔢 Tampilkan versi & ID perangkat
   String version = "v2.1";
-  lcd.setCursor(LCD_COLS - version.length() - 1, 0);
-  lcd.print(version);
+  // lcd.setCursor(LCD_COLS - version.length() - 1, 0);
+  // lcd.print(version);
 
   String mac = WiFi.macAddress();
   mac.replace(":", "");
