@@ -13,7 +13,7 @@ void initSensors() {
 
 // Sensor Functions
 void readSensors() {
-    sensorData.temperature = dht.readTemperature();
+    sensorData.temperature = dht.readTemperature()-4;
     sensorData.humidity = dht.readHumidity();
     sensorData.voltage = pzem.voltage();
     sensorData.current = pzem.current();
